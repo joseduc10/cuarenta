@@ -1,0 +1,19 @@
+cuarenta.py
+
+Deck
+- TODO
+- Modify to allow comparison between ranks
+- Add 'Card' class? Too convoluted?
+
+Round
+- Contains a deck and players 
+- Holds the state of the round
+  - Whose turn is next
+  - Point Count, etc
+  - Winner
+
+Match:
+- A collection of rounds.
+- Holds the state of the game. 
+  - What round is the match on
+  - Winners of previous rounds
