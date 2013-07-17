@@ -59,9 +59,18 @@ class Round:
         self.deck.shuffle()
         while self.winner == None:
             if not self.deck.cardsLeft():
-                resetDeck()
+                self.resetDeck()
                 continue
             self.playNextHand()
+
+    def getGameState(self, hands):
+        gameState = {'curPlayer': {}, 'oppPlayer': {}, 'discardPile':[]}
+        gameeState['curPlayer'] = {'hand':hands[self.curPlayer], 
+                                   'score':self.scores[self.curPlayer]}
+        gameeState['oppPlayer'] = {'hand':hands[(self.curPlayer+1)%2], 
+                                   'score':self.scores[(self.curPlayer+1)%2]}
+        gameState['cardsOnTable'] = tableCards
+        return gameState
 
     def playNextHand(self):
         hands = [[],[]]
@@ -69,12 +78,13 @@ class Round:
         hands[(self.curPlayer+1)%2] = [self.deck.draw() for i in xrange(5)]
         while self.winner != None and (hands[0] or hands[1]):
             print "It's %s's turn" %self.players[self.curPlayer].name
-            move = self.players[self.curPlayer].move(self.getGameState())
+            gameSate = self.getGameState(hands)
+            move = self.players[self.curPlayer].move(gameState)
             while not self.processMove(move, playerHand):
                 print "Attempted invalid move"
                 print move
                 print "Try again"
-                move = self.players[self.curPlayer].move(self.getGameState())
+                move = self.players[self.curPlayer].move(gameState)
             self.curPlayer = (self.curPlayer+1) % 2
 
     def resetDeck(self):
@@ -93,7 +103,7 @@ class Round:
             if pilePoints % 2 == 1: 
                 pilePoints += 1
                 self.scores[1] += pilePoints
-            if self.scores[1] >= 40 or pilePoints > MERCY_RULE:
+            if self.scores[2] >= 40 or pilePoints > MERCY_RULE:
                 self.winner = 1
         self.discardPiles = [0,0]
 
@@ -190,7 +200,7 @@ class Match:
         - rounds: positive odd integer. Number of rounds to play
         '''
         self.players = players
-        self.deck = CuarentDeck()
+        self.deck = CuarentaDeck()
         self.scores = [0,0] 
         self.rounds = [Round(self.players, self.deck) for i in xrange(rounds)]
 
